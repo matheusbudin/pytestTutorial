@@ -11,7 +11,7 @@ class ShoppingCart:
         return len(self.items)
     
     def get_items(self) -> List[str]:
-        pass
+        return self.items
 
     def get_total_price(self, price_map):
         pass
