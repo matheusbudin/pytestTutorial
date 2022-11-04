@@ -1,10 +1,15 @@
 from shopping_cart import ShoppingCart
 import pytest
+from item_database import *
+from unittest.mock import *
 
 #fixtures - help redure repeating code - passed as an argument
+#pytest.fixture - makes it available to pass a function as an argument, in this case object instance Shoppingcart(5)
 
 @pytest.fixture
 def cart():
+    #All seturp for cart here that will be passed throughout the tests
+    #Each shoppingcart is created and passed as new in each test_ it doesnt reuse it
     return ShoppingCart(5)
 
 def test_can_add_item_to_cart(cart):
@@ -32,5 +37,15 @@ def test_can_get_total_price(cart):   #for testing only one test, on cmd: pytest
    
     cart.add("apple")
     cart.add("orange")
-    price_map = {"apple": 1.0, "orange": 2.0}
-    assert cart.get_total_price(price_map) == 3.0
+    item_database = ItemDatabase()
+
+    def mock_get_item(item: str):
+        if item == "apple":
+            return 1.0
+        if item == "orange":
+            return 2.0
+
+    item_database.get = Mock(side_effect=mock_get_item)  #mocking the get method, it will exist, but it hasnt been implemented yet (thaths why we mock)
+    assert cart.get_total_price(item_database) == 3.0
+
+
